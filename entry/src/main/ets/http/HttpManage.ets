@@ -1,11 +1,13 @@
-import { FastHttp } from "netbuild"
-import { BannerBean } from "../model/BannerBean"
+import { FastHttp } from 'netbuild'
+import { API } from './API'
 
 class HttpManage {
   private fastHttp: FastHttp = new FastHttp()
 
-  getBanner(path: string){
-    return this.fastHttp.get(path, )
+  getBanner() {
+    this.fastHttp.get(API.banner).then(() => {
+
+    })
   }
 }
 

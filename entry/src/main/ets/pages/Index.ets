@@ -12,7 +12,7 @@ struct Index {
         .fontSize($r('app.float.page_text_font_size'))
         .fontWeight(FontWeight.Bold)
         .onClick(() => {
-          HttpManage.getBanner(API.banner)
+          HttpManage.getBanner()
         })
     }
     .height('100%')

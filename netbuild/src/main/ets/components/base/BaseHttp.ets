@@ -4,8 +4,7 @@ import { NConst } from '../constant/NConst';
 import { BaseResponse } from '../../../../../Index';
 
 export class BaseHttp {
-  baseGet<T>(pathApi: string, data?: object, baseHeader?: object): Promise<BaseResponse<T>> {
-    let res: BaseResponse<T> = new BaseResponse()
+  baseGet(pathApi: string, data?: object, baseHeader?: object): Promise<BaseResponse> {
     // 每一个httpRequest对应一个HTTP请求任务，不可复用
     let httpRequest = http.createHttp();
     // 用于订阅HTTP响应头，此接口会比request请求先返回。可以根据业务需要订阅此消息
@@ -22,22 +21,25 @@ export class BaseHttp {
       readTimeout: 30000, // 可选，默认为30000ms
       usingProxy: false, // 可选，默认不使用网络代理，自API 10开始支持该属性
     })
-    responseResult.then((value: http.HttpResponse) => {
-      if (value.responseCode === 200) {
-        let result = `${value.result}`;
-        let resultJson: BaseResponse<T> = JSON.parse(result);
-        if (resultJson.errorCode === 0) {
-          res.data = resultJson.data;
+    let res: BaseResponse = new BaseResponse()
+    return new Promise((resolve, reject) => {
+      responseResult.then((value: http.HttpResponse) => {
+        if (value.responseCode === 200) {
+          let result = `${value.result}`;
+          let resultJson: BaseResponse = JSON.parse(result);
+          if (resultJson.errorCode === 0) {
+            res.data = resultJson.data;
+          }
+          res.errorCode = resultJson.errorCode;
+          res.errorMsg = resultJson.errorMsg;
+        } else {
+          res.errorMsg = `请求失败，请重试!${value.responseCode}`;
         }
-        res.errorCode = resultJson.errorCode;
-        res.errorMsg = resultJson.errorMsg;
-      } else {
-        res.errorMsg = `请求失败，请重试!${value.responseCode}`;
-      }
-      return res.data
-    }).catch(() => {
-      res.errorMsg = '请求失败，请重试!';
-      return res;
-    });
+        return resolve(res)
+      }).catch(() => {
+        res.errorMsg = '请求失败，请重试!';
+        return reject(res);
+      })
+    })
   }
 }

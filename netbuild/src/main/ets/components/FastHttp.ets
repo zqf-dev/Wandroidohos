@@ -2,6 +2,7 @@ import { BaseContentType } from './base/BaseContentType';
 import { HashMap } from '@kit.ArkTS';
 import { NConst } from './constant/NConst';
 import { BaseHttp } from './base/BaseHttp';
+import { BaseResponse } from '../../../../Index';
 
 let headData: object
 
@@ -18,7 +19,7 @@ export class FastHttp extends BaseHttp {
     }
   }
 
-  get<T>(url: string, params?: object, header?: HashMap<string, string>, method?: BaseContentType) {
+  get(url: string, params?: object, header?: HashMap<string, string>, method?: BaseContentType): Promise<BaseResponse> {
     if (method) {
       headData["Content-Type"] = method
     }
@@ -32,7 +33,7 @@ export class FastHttp extends BaseHttp {
         headData[key] = value
       });
     }
-    this.baseGet<T>(url, params, headData)
+    return this.baseGet(url, params, headData)
   }
 
   post() {
