@@ -3,10 +3,18 @@ import { HashMap } from '@kit.ArkTS';
 import { NConst } from './constant/NConst';
 import { BaseHttp } from './base/BaseHttp';
 import { BaseResponse } from '../../../../Index';
+import { HttpInterceptor } from './interceptor/HttpInterceptor';
+import { DefHeadersInterceptor } from './interceptor/DefHeadersInterceptor';
 
 let headData: object
 
 export class FastHttp extends BaseHttp {
+  private REQUEST_INTERCEPTORS: Array<HttpInterceptor> = [new DefHeadersInterceptor()]
+
+  addRequestInterceptor(interceptor: HttpInterceptor) {
+    this.REQUEST_INTERCEPTORS.push(interceptor)
+  }
+
   static setBaseUrl(baseUrl: string) {
     if (baseUrl) {
       NConst.baseUrl = baseUrl;

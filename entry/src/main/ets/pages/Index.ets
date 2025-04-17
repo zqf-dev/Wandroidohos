@@ -1,5 +1,4 @@
-import { API } from '../http/API';
-import HttpManage from '../http/HttpManage'
+import HttpManage from '../http/HttpManage';
 
 @Entry
 @Component
